@@ -26,18 +26,21 @@ class Runner:
         for topic_dir_name in topics_dir_name:
             topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir, topic_dir_name)))
 
+            self._set_process_envs(topic_dir_path)
+
             actions = []
             for action_file_name in actions_file_name:
                 if 'py' in action_file_name and '__init__' not in action_file_name:
+                    action_name = action_file_name.rsplit('.', 1)[0]  # remove .py format
                     actions.append({
-                        'name': action_file_name.rsplit('.', 1)[0],
-                        'obj': self._get_action_obj(topic_dir_path, action_file_name)
+                        'name': action_name,
+                        'class': self._get_action_class(topic_dir_name, action_name)
                     })
 
             if topic_dir_name == 'other':
                 topic_config_class = None  # `other` topic no need to config file
             else:
-                topic_config_class = self._get_topic_config_class(topic_dir_path)
+                topic_config_class = self._get_topic_config_class(topic_dir_name)
 
             self.topics.append({
                 'name': topic_dir_name,
@@ -47,31 +50,26 @@ class Runner:
             })
 
     @staticmethod
-    def _get_action_obj(topic_dir_path, action_file_name):
-        action_file_path = os.path.join(topic_dir_path, action_file_name)
-        spec = importlib.util.spec_from_file_location('', action_file_path)
-        action_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(action_module)
+    def _get_action_class(topic_name, action_name):
+        action_module = __import__(f'topics.{topic_name}.{action_name}', fromlist=['object'])
 
         try:
-            return action_module.Action()
+            return action_module.Action
         except AttributeError:
-            print(f'Please add Action class in {action_file_path}')
+            print(f'Please add Action class to {action_name}.py in {topic_name} topic')
             sys.exit()
 
     @staticmethod
-    def _get_topic_config_class(topic_dir_path):
+    def _get_topic_config_class(topic_name):
+        topic_module = __import__(f'topics.{topic_name}', fromlist=['object'])
         try:
-            spec = importlib.util.spec_from_file_location('', os.path.join(topic_dir_path, '__init__.py'))
-            topic_module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(topic_module)
             return topic_module.TopicConfig
-        except FileNotFoundError:
-            print(f'Please add __init__.py with TopicConfig class in {topic_dir_path}')
+        except AttributeError:
+            print(f'Please add TopicConfig class to __init__.py of {topic_name} topic')
             sys.exit()
 
     def _generate_nested_parser(self):
-        main_parser = argparse.ArgumentParser(description='Some useful but boring jobs is automated here :)')
+        main_parser = argparse.ArgumentParser()
         main_parser_subparsers = main_parser.add_subparsers(dest='topic')
 
         parsers = {}
@@ -90,12 +88,12 @@ class Runner:
 
             for action in topic['actions']:
                 action_parser = f"{action['name']}_parser"
-                action_obj = action['obj']
+                action_class = action['class']
                 parsers[action_parser] = parsers[topic_subparsers].add_parser(
                     action['name'],
-                    help=action_obj.get_help()
+                    help=action_class.get_help()
                 )
-                action_obj.add_arguments(parsers[action_parser])
+                action_class.add_arguments(parsers[action_parser])
 
         argcomplete.autocomplete(main_parser)
         return main_parser
@@ -112,7 +110,7 @@ class Runner:
 
                 for action in topic['actions']:
                     if action['name'] == args.action:
-                        return action['obj']
+                        return action['class']()
 
     @staticmethod
     def _set_process_envs(topic_dir_path):
