@@ -26,8 +26,6 @@ class Runner:
         for topic_dir_name in topics_dir_name:
             topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir, topic_dir_name)))
 
-            self._set_process_envs(topic_dir_path)
-
             actions = []
             for action_file_name in actions_file_name:
                 if 'py' in action_file_name and '__init__' not in action_file_name:
@@ -36,6 +34,8 @@ class Runner:
                         'name': action_name,
                         'class': self._get_action_class(topic_dir_name, action_name)
                     })
+
+                    self._set_process_envs(topic_dir_path, action_name)
 
             if topic_dir_name == 'other':
                 topic_config_class = None  # `other` topic no need to config file
@@ -106,15 +106,15 @@ class Runner:
 
         for topic in self.topics:
             if topic['name'] == args.topic:
-                self._set_process_envs(topic['dir_path'])
-
                 for action in topic['actions']:
                     if action['name'] == args.action:
+                        self._set_process_envs(topic['dir_path'], action['name'])
                         return action['class']()
 
     @staticmethod
-    def _set_process_envs(topic_dir_path):
+    def _set_process_envs(topic_dir_path, action_name):
         os.environ['RUNNING_TOPIC_DIR'] = topic_dir_path
+        os.environ['RUNNING_ACTION_NAME'] = action_name
 
 
 def commander_admin():

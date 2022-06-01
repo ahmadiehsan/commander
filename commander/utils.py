@@ -2,6 +2,14 @@ import os
 from pathlib import Path
 
 
+def action_name():
+    return os.environ['RUNNING_ACTION_NAME']
+
+
+def topic_dir_path():
+    return os.environ['RUNNING_TOPIC_DIR']
+
+
 def asset(*args, **kwargs):
     return _standard_directories_content_path_generator('assets', *args, **kwargs)
 
