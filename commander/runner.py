@@ -24,31 +24,32 @@ class Runner:
     def _fill_topics(self):
         _, topics_dir_name, _ = next(os.walk(self.topics_dir))
         for topic_dir_name in topics_dir_name:
-            topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir, topic_dir_name)))
+            if '__' not in topic_dir_name:  # __ like __pycache__
+                topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir, topic_dir_name)))
 
-            actions = []
-            for action_file_name in actions_file_name:
-                if 'py' in action_file_name and '__init__' not in action_file_name:
-                    action_name = action_file_name.rsplit('.', 1)[0]  # remove .py format
+                actions = []
+                for action_file_name in actions_file_name:
+                    if '.py' in action_file_name and '__' not in action_file_name:  # __ like __init__.py
+                        action_name = action_file_name.rsplit('.', 1)[0]  # remove .py format
 
-                    self._set_process_envs(topic_dir_path, action_name)
+                        self._set_process_envs(topic_dir_path, action_name)
 
-                    actions.append({
-                        'name': action_name,
-                        'class': self._get_action_class(topic_dir_name, action_name)
-                    })
+                        actions.append({
+                            'name': action_name,
+                            'class': self._get_action_class(topic_dir_name, action_name)
+                        })
 
-            if topic_dir_name == 'other':
-                topic_config_class = None  # `other` topic no need to config file
-            else:
-                topic_config_class = self._get_topic_config_class(topic_dir_name)
+                if topic_dir_name == 'other':
+                    topic_config_class = None  # `other` topic no need to config file
+                else:
+                    topic_config_class = self._get_topic_config_class(topic_dir_name)
 
-            self.topics.append({
-                'name': topic_dir_name,
-                'dir_path': topic_dir_path,
-                'config_class': topic_config_class,
-                'actions': actions
-            })
+                self.topics.append({
+                    'name': topic_dir_name,
+                    'dir_path': topic_dir_path,
+                    'config_class': topic_config_class,
+                    'actions': actions
+                })
 
     @staticmethod
     def _get_action_class(topic_name, action_name):
