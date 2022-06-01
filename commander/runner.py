@@ -30,12 +30,13 @@ class Runner:
             for action_file_name in actions_file_name:
                 if 'py' in action_file_name and '__init__' not in action_file_name:
                     action_name = action_file_name.rsplit('.', 1)[0]  # remove .py format
+
+                    self._set_process_envs(topic_dir_path, action_name)
+
                     actions.append({
                         'name': action_name,
                         'class': self._get_action_class(topic_dir_name, action_name)
                     })
-
-                    self._set_process_envs(topic_dir_path, action_name)
 
             if topic_dir_name == 'other':
                 topic_config_class = None  # `other` topic no need to config file
