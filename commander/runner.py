@@ -1,12 +1,15 @@
+import argcomplete
 import argparse
 import importlib.util
 import os
 import sys
 
-import argcomplete
-
 
 class Runner:
+    def __init__(self, before_run_hook=None, after_run_hook=None):
+        self.before_run_hook = before_run_hook if before_run_hook else lambda action_obj: None
+        self.after_run_hook = after_run_hook if after_run_hook else lambda action_obj: None
+
     topics = []
     topics_dir = os.path.join(os.environ['PROJECT_ABSOLUTE_PATH'], 'topics')
 
@@ -19,7 +22,10 @@ class Runner:
 
         # run action with user's entered args
         action_obj = self._get_running_action_obj(arguments)
+
+        self.before_run_hook(action_obj=action_obj)
         action_obj.run(arguments)
+        self.after_run_hook(action_obj=action_obj)
 
     def _fill_topics(self):
         _, topics_dir_name, _ = next(os.walk(self.topics_dir))
