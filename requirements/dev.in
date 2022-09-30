@@ -1,0 +1,3 @@
+-r base.in
+
+pre-commit==2.20.0

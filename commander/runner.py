@@ -1,17 +1,17 @@
-import argcomplete
 import argparse
-import importlib.util
 import os
 import sys
 
+import argcomplete
+
 
 class Runner:
+    topics = []
+    topics_dir_path = os.environ['TOPICS_DIR_ABSOLUTE_PATH']
+
     def __init__(self, before_run_hook=None, after_run_hook=None):
         self.before_run_hook = before_run_hook if before_run_hook else lambda action_obj: None
         self.after_run_hook = after_run_hook if after_run_hook else lambda action_obj: None
-
-    topics = []
-    topics_dir = os.path.join(os.environ['PROJECT_ABSOLUTE_PATH'], 'topics')
 
     def run(self):
         self._fill_topics()
@@ -28,10 +28,10 @@ class Runner:
         self.after_run_hook(action_obj=action_obj)
 
     def _fill_topics(self):
-        _, topics_dir_name, _ = next(os.walk(self.topics_dir))
-        for topic_dir_name in topics_dir_name:
+        _, topics_dir_names, _ = next(os.walk(self.topics_dir_path))
+        for topic_dir_name in topics_dir_names:
             if '__' not in topic_dir_name:  # __ like __pycache__
-                topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir, topic_dir_name)))
+                topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir_path, topic_dir_name)))
 
                 actions = []
                 for action_file_name in actions_file_name:
@@ -40,26 +40,26 @@ class Runner:
 
                         self._set_process_envs(topic_dir_path, action_name)
 
-                        actions.append({
-                            'name': action_name,
-                            'class': self._get_action_class(topic_dir_name, action_name)
-                        })
+                        actions.append(
+                            {'name': action_name, 'class': self._get_action_class(topic_dir_name, action_name)}
+                        )
 
                 if topic_dir_name == 'other':
                     topic_config_class = None  # `other` topic no need to config file
                 else:
                     topic_config_class = self._get_topic_config_class(topic_dir_name)
 
-                self.topics.append({
-                    'name': topic_dir_name,
-                    'dir_path': topic_dir_path,
-                    'config_class': topic_config_class,
-                    'actions': actions
-                })
+                self.topics.append(
+                    {
+                        'name': topic_dir_name,
+                        'dir_path': topic_dir_path,
+                        'config_class': topic_config_class,
+                        'actions': actions,
+                    }
+                )
 
-    @staticmethod
-    def _get_action_class(topic_name, action_name):
-        action_module = __import__(f'topics.{topic_name}.{action_name}', fromlist=['object'])
+    def _get_action_class(self, topic_name, action_name):
+        action_module = __import__(f'{topic_name}.{action_name}', fromlist=['object'])
 
         try:
             return action_module.Action
@@ -67,9 +67,8 @@ class Runner:
             print(f'Please add Action class to {action_name}.py in {topic_name} topic')
             sys.exit()
 
-    @staticmethod
-    def _get_topic_config_class(topic_name):
-        topic_module = __import__(f'topics.{topic_name}', fromlist=['object'])
+    def _get_topic_config_class(self, topic_name):
+        topic_module = __import__(f'{topic_name}', fromlist=['object'])
         try:
             return topic_module.TopicConfig
         except AttributeError:
@@ -98,8 +97,7 @@ class Runner:
                 action_parser = f"{action['name']}_parser"
                 action_class = action['class']
                 parsers[action_parser] = parsers[topic_subparsers].add_parser(
-                    action['name'],
-                    help=action_class.get_help()
+                    action['name'], help=action_class.get_help()
                 )
                 action_class.add_arguments(parsers[action_parser])
 
@@ -112,12 +110,19 @@ class Runner:
             args.action = args.topic
             args.topic = 'other'
 
+        selected_action = None
         for topic in self.topics:
             if topic['name'] == args.topic:
                 for action in topic['actions']:
                     if action['name'] == args.action:
                         self._set_process_envs(topic['dir_path'], action['name'])
-                        return action['class']()
+                        selected_action = action['class']
+
+        if not selected_action:
+            print('Please enter a valid action')
+            sys.exit()
+
+        return selected_action()
 
     @staticmethod
     def _set_process_envs(topic_dir_path, action_name):

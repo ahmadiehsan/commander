@@ -3,7 +3,7 @@
 import os
 
 if __name__ == '__main__':
-    os.environ['PROJECT_ABSOLUTE_PATH'] = os.path.dirname(os.path.abspath(__file__))
+    os.environ['TOPICS_DIR_ABSOLUTE_PATH'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'topics')
 
     try:
         from commander.runner import Runner
