@@ -24,7 +24,7 @@ class Runner:
         action_obj = self._get_running_action_obj(arguments)
 
         self.before_run_hook(action_obj=action_obj)
-        action_obj.run(arguments)
+        action_obj.run()
         self.after_run_hook(action_obj=action_obj)
 
     def _fill_topics(self):
@@ -58,7 +58,8 @@ class Runner:
                     }
                 )
 
-    def _get_action_class(self, topic_name, action_name):
+    @staticmethod
+    def _get_action_class(topic_name, action_name):
         action_module = __import__(f'{topic_name}.{action_name}', fromlist=['object'])
 
         try:
@@ -67,7 +68,8 @@ class Runner:
             print(f'Please add Action class to {action_name}.py in {topic_name} topic')
             sys.exit()
 
-    def _get_topic_config_class(self, topic_name):
+    @staticmethod
+    def _get_topic_config_class(topic_name):
         topic_module = __import__(f'{topic_name}', fromlist=['object'])
         try:
             return topic_module.TopicConfig
@@ -106,7 +108,8 @@ class Runner:
 
     def _get_running_action_obj(self, args):
         if not hasattr(args, 'action'):
-            # `other` topic's actions run without `other` string in their command so we add it manually for user
+            # Actions of the `other` topic will run without the `other` string in their command,
+            # so we will add it manually for the user
             args.action = args.topic
             args.topic = 'other'
 
@@ -121,6 +124,8 @@ class Runner:
         if not selected_action:
             print('Please enter a valid action')
             sys.exit()
+
+        selected_action.arguments = args
 
         return selected_action()
 
