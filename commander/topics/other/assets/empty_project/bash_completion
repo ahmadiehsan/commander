@@ -1,1 +1,0 @@
-eval "$(register-python-argcomplete ./action_runner.py)"

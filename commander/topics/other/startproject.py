@@ -12,7 +12,7 @@ class Action(BaseAction):
     def add_arguments(parser):
         parser.add_argument('project_name', help='project name', nargs='?', default='commander_empty_project')
 
-    def run(self, arguments):
-        commands = f"cp -r {asset('empty_project')}/. {os.path.join(os.environ['PWD'], arguments.project_name)}"
+    def run(self):
+        commands = f"cp -r {asset('empty_project')}/. {os.path.join(os.environ['PWD'], self.arguments.project_name)}"
         subprocess.run(commands, shell=True, check=True)  # nosec
         print('Done!')

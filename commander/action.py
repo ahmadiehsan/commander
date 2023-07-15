@@ -33,7 +33,7 @@ class BaseAction:
 
 
 def call_action(arguments: list):
-    command = sys.argv[0]  # somethings like ./action_runner.py
+    command = sys.argv[0]  # somethings like ./run_action.py
 
     for argument in arguments:
         command += ' ' + argument

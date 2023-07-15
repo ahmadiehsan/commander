@@ -5,7 +5,7 @@ import sys
 import argcomplete
 
 
-class Runner:
+class Run:
     topics = []
     topics_dir_path = os.environ['TOPICS_DIR_ABSOLUTE_PATH']
 
@@ -136,5 +136,5 @@ class Runner:
 
 
 def commander_admin():
-    runner = Runner()
-    runner.run()
+    run = Run()
+    run.run()

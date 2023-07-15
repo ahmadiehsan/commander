@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# ###############
+# Pre-Commit
+# #####
+function pre_commit.init() {
+  pre-commit install
+  pre-commit install --hook-type pre-push
+}
+
+function pre_commit.run_for_all() {
+  pre-commit run --all-files
+}
+
+# ###############
+# Requirements
+# #####
+function requirements.compile() {
+  pip install -r requirements/prerequisite/pip-tools.txt
+  pip-compile requirements/raw/dev.in -o requirements/compiled/dev.txt
+}
+
+function requirements.install.dev() {
+  pip install -r requirements/prerequisite/pip-tools.txt
+  pip-sync requirements/compiled/dev.txt
+}
+
+# ###############
+# Run (should be at the end of the file)
+# #####
+eval "${1}" "${@:2}"

@@ -2,7 +2,7 @@ import os
 import sys
 
 if os.environ.get('TOPICS_DIR_ABSOLUTE_PATH'):
-    # running by ./action_runner.py
+    # running by ./run_action.py
     _TOPICS_DIR_ABSOLUTE_PATH = os.environ['TOPICS_DIR_ABSOLUTE_PATH']
 
 else:
