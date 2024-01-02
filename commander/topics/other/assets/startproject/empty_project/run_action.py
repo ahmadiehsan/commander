@@ -6,7 +6,7 @@ if __name__ == '__main__':
     os.environ['TOPICS_DIR_ABSOLUTE_PATH'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'topics')
 
     try:
-        from commander.run import Run
+        from commander.commander_run import CommanderRun
     except ImportError as exc:
         raise ImportError(
             "Couldn't import Commander. Are you sure it's installed and "
@@ -14,5 +14,5 @@ if __name__ == '__main__':
             "forget to activate a virtual environment?"
         ) from exc
 
-    run = Run()
-    run.run()
+    commander_run = CommanderRun()
+    commander_run.run()

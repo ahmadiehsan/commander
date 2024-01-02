@@ -1,31 +1,44 @@
 #!/bin/bash
 
+set -e
+
 # ###############
-# Pre-Commit
+# Pre Commit
 # #####
-function pre_commit.init() {
+pre_commit.init() {
   pre-commit install
   pre-commit install --hook-type pre-push
+  pre-commit install --hook-type commit-msg
 }
 
-function pre_commit.run_for_all() {
+pre_commit.run_for_all() {
   pre-commit run --all-files
 }
 
 # ###############
 # Requirements
 # #####
-function requirements.compile() {
+requirements.compile() {
+  rm -f requirements/compiled/*.txt
   pip install -r requirements/prerequisite/pip-tools.txt
-  pip-compile requirements/raw/dev.in -o requirements/compiled/dev.txt
+  pip-compile -v requirements/raw/dev.in -o requirements/compiled/dev.txt
 }
 
-function requirements.install.dev() {
+requirements.install.dev() {
   pip install -r requirements/prerequisite/pip-tools.txt
   pip-sync requirements/compiled/dev.txt
 }
 
 # ###############
-# Run (should be at the end of the file)
+# Run & Help (Should be at the end of the file)
 # #####
+help() {
+  echo "Available Commands:"
+
+  function_names=$(declare -F | cut -d' ' -f3)
+  for function_name in $function_names; do
+    echo "./run $function_name"
+  done
+}
+
 eval "${1}" "${@:2}"

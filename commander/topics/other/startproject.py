@@ -1,11 +1,11 @@
 import os
 import subprocess
 
-from commander.action import BaseAction
-from commander.utils import asset
+from commander.i_action import IAction
+from commander.utils.standard_directory import asset
 
 
-class Action(BaseAction):
+class Action(IAction):
     help = 'scaffold an empty project'
 
     @staticmethod

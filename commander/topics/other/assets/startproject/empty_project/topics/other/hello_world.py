@@ -1,7 +1,7 @@
-from commander.action import BaseAction
+from commander.i_action import IAction
 
 
-class Action(BaseAction):
+class Action(IAction):
     help = 'hello world'
 
     def run(self):

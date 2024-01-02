@@ -1,6 +1,11 @@
 exclude: ^(requirements|.*assets|.*resources|.*results)
 default_stages: [ commit ]
 repos:
+  - repo: https://github.com/jorisroovers/gitlint
+    rev: v0.17.0
+    hooks:
+      - id: gitlint
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.1.0
     hooks:
@@ -17,9 +22,9 @@ repos:
     hooks:
       - id: isort
         args: [
-            '--multi-line', 'VERTICAL_HANGING_INDENT',
-            '--trailing-comma',
-            '--line-length', '120'
+          --multi-line, 'VERTICAL_HANGING_INDENT',
+          --trailing-comma,
+          --line-length, '120'
         ]
 
   - repo: https://github.com/psf/black
@@ -27,23 +32,25 @@ repos:
     hooks:
       - id: black
         args: [
-            '--skip-string-normalization',
-            '--skip-magic-trailing-comma',
-            '--line-length', '120'
-        ]
-
-  - repo: https://github.com/pycqa/pylint
-    rev: v2.15.3
-    hooks:
-      - id: pylint
-        args: [
-            '--max-line-length', '120',
-            '--min-public-methods', '1',
-            '--disable', 'missing-module-docstring,missing-class-docstring,missing-function-docstring,import-error'
+          --skip-string-normalization,
+          --skip-magic-trailing-comma,
+          --line-length, '120',
+          --target-version, 'py36'
         ]
 
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.4
+    rev: 1.7.0
     hooks:
       - id: bandit
-        args: ['-ll']
+        args: [ -ll ]
+
+  - repo: https://github.com/pycqa/pylint
+    rev: v2.13.9
+    hooks:
+      - id: pylint
+        args: [
+          --min-public-methods, '1',
+          --disable, 'missing-module-docstring,missing-class-docstring,missing-function-docstring,import-error,duplicate-code',
+          --max-line-length, '120',
+          --py-version, '3.6'
+        ]
