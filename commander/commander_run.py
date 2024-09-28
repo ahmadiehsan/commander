@@ -1,6 +1,7 @@
 import argparse
 import os
 import sys
+from pathlib import Path
 
 import argcomplete  # noqa
 
@@ -59,12 +60,15 @@ class CommanderRun:
             sys.exit()
 
     def _fill_topics_and_actions(self):
-        _, topics_dir_names, _ = next(os.walk(self.topics_dir_path))
+        topics_dir_path = Path(self.topics_dir_path)
+        topics_dir_names = [item.name for item in topics_dir_path.iterdir() if item.is_dir()]
+
         for topic_dir_name in topics_dir_names:
             if '__' in topic_dir_name:  # __ like __pycache__
                 continue
 
-            topic_dir_path, _, actions_file_name = next(os.walk(os.path.join(self.topics_dir_path, topic_dir_name)))
+            topic_dir_path = topics_dir_path / topic_dir_name
+            actions_file_name = [item.name for item in topic_dir_path.iterdir() if item.is_file()]
 
             topic_class = self._get_topic_class(topic_dir_name)
 
@@ -175,8 +179,8 @@ class CommanderRun:
 
     @staticmethod
     def _set_process_envs(topic_dir_path, action_name):
-        os.environ['RUNNING_TOPIC_DIR'] = topic_dir_path
-        os.environ['RUNNING_ACTION_NAME'] = action_name
+        os.environ['RUNNING_TOPIC_DIR'] = str(topic_dir_path)
+        os.environ['RUNNING_ACTION_NAME'] = str(action_name)
 
 
 def commander_admin():

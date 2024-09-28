@@ -2,7 +2,7 @@ from commander.i_action import IAction
 
 
 class Action(IAction):
-    help = 'hello world'
+    help = 'Hello world'
 
     def run(self):
         print('=========================')

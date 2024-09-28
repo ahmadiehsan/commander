@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import os
+from pathlib import Path
 
 if __name__ == '__main__':
-    os.environ['TOPICS_DIR_ABSOLUTE_PATH'] = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'topics')
+    os.environ['TOPICS_DIR_ABSOLUTE_PATH'] = str(Path(__file__).resolve().parent / 'topics')
 
     try:
         from commander.commander_run import CommanderRun

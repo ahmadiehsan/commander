@@ -1,15 +1,13 @@
-import os
 from pathlib import Path
 
 from commander.utils.topic_and_action import action_name, topic_dir_path
 
-
 def _standard_directories_content_path_generator(standard_directory_name, *args, **kwargs):
-    topic_standard_directory_path = os.path.join(topic_dir_path(), standard_directory_name, action_name())
-    generated_path = os.path.join(topic_standard_directory_path, *args)
+    topic_standard_directory_path = Path(topic_dir_path()) / standard_directory_name / action_name()
+    generated_path = topic_standard_directory_path.joinpath(*args)
 
     if kwargs.get('mkdir'):
-        Path(os.path.dirname(generated_path)).mkdir(parents=True, exist_ok=True)
+        generated_path.parent.mkdir(parents=True, exist_ok=True)
 
     return generated_path
 
