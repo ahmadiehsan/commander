@@ -1,13 +1,13 @@
-exclude: ^(requirements|.*assets|.*resources|.*results)
+exclude: ^(.*assets|.*resources|.*results)
 default_stages: [ commit ]
 repos:
   - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.17.0
+    rev: v0.19.1
     hooks:
       - id: gitlint
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0
+    rev: v5.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
@@ -15,55 +15,34 @@ repos:
       - id: trailing-whitespace
         stages: [ commit ]
       - id: check-merge-conflict
-      - id: double-quote-string-fixer
 
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.7.0-3
+    rev: v3.10.0-2
     hooks:
       - id: shfmt
-        args: [ --indent, '2', --write ]
+        args: [ --indent, "2", --write ]
         stages: [ commit ]
 
   - repo: https://github.com/mrtazz/checkmake.git
     rev: 0.2.2
     hooks:
       - id: checkmake
-        args: [ --config, './.checkmake.ini' ]
+        args: [ --config, "./.checkmake.ini" ]
 
-  - repo: https://github.com/pycqa/isort
-    rev: 5.10.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
     hooks:
-      - id: isort
-        args: [
-          --multi-line, 'VERTICAL_HANGING_INDENT',
-          --trailing-comma,
-          --line-length, '120'
-        ]
-
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
-    hooks:
-      - id: black
-        args: [
-          --skip-string-normalization,
-          --skip-magic-trailing-comma,
-          --line-length, '120',
-          --target-version, 'py36'
-        ]
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format
 
   - repo: https://github.com/pycqa/bandit
-    rev: 1.7.0
+    rev: 1.7.10
     hooks:
       - id: bandit
-        args: [ -ll ]
+        args: [ --configfile, "pyproject.toml", --recursive, "." ]
 
   - repo: https://github.com/pycqa/pylint
-    rev: v2.13.9
+    rev: v3.2.7
     hooks:
       - id: pylint
-        args: [
-          --min-public-methods, '1',
-          --disable, 'missing-module-docstring,missing-class-docstring,missing-function-docstring,import-error,duplicate-code',
-          --max-line-length, '120',
-          --py-version, '3.6'
-        ]

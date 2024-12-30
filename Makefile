@@ -26,10 +26,9 @@ pre_commit.run_for_all:
 # Requirements
 # =====
 requirements.compile:
-	rm -f requirements/compiled/*.txt
-	pip install -r requirements/prerequisite/pip-tools.txt
-	pip-compile -v requirements/raw/dev.in -o requirements/compiled/dev.txt
+	pip install -q poetry==1.8.5
+	poetry update
 
 requirements.install:
-	pip install -r requirements/prerequisite/pip-tools.txt
-	pip-sync requirements/compiled/dev.txt
+	pip install -q poetry==1.8.5
+	poetry install
