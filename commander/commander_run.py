@@ -166,7 +166,7 @@ class CommanderRun:
                         selected_action = action["class"]
 
         if not selected_action:
-            logger.error("Please enter a valid action")
+            logger.error("please enter a valid action")
             sys.exit()
 
         selected_action.arguments = args

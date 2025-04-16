@@ -1,48 +1,51 @@
-exclude: ^(.*assets|.*resources|.*results)
-default_stages: [ commit ]
+exclude: ^(.*assets|.*resources|.*results|\.venv)
+default_stages: [commit]
 repos:
-  - repo: https://github.com/jorisroovers/gitlint
-    rev: v0.19.1
-    hooks:
-      - id: gitlint
-
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
       - id: check-yaml
       - id: end-of-file-fixer
-        stages: [ commit ]
+        stages: [commit]
       - id: trailing-whitespace
-        stages: [ commit ]
+        stages: [commit]
       - id: check-merge-conflict
 
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.10.0-2
+    rev: v3.11.0-1
     hooks:
       - id: shfmt
-        args: [ --indent, "2", --write ]
-        stages: [ commit ]
+        args: [--indent, "2", --write]
+        stages: [commit]
 
   - repo: https://github.com/mrtazz/checkmake.git
     rev: 0.2.2
     hooks:
       - id: checkmake
-        args: [ --config, "./.checkmake.ini" ]
+        args: [--config, "./.checkmake.ini"]
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.8.4
+    rev: v0.11.2
     hooks:
       - id: ruff
-        args: [ --fix ]
       - id: ruff-format
 
-  - repo: https://github.com/pycqa/bandit
-    rev: 1.7.10
+  - repo: local
     hooks:
-      - id: bandit
-        args: [ --configfile, "pyproject.toml", --recursive, "." ]
+      - id: dir_checker
+        name: validate directories
+        language: python
+        entry: env PYTHONPATH=. uv run --active --no-sync scripts/dir_checker/main.py
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: python_checker
+        name: validate python files
+        language: python
+        entry: env PYTHONPATH=. uv run --active --no-sync scripts/python_checker/main.py
 
   - repo: https://github.com/pycqa/pylint
-    rev: v3.2.7
+    rev: v3.3.6
     hooks:
       - id: pylint

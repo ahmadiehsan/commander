@@ -10,9 +10,9 @@ if __name__ == "__main__":
         from commander.commander_run import CommanderRun
     except ImportError as exc:
         err_msg = (
-            "Couldn't import Commander. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
+            "couldn't import Commander. are you sure it's installed and "
+            "available on your PYTHONPATH environment variable? did you "
+            "forget to activate a virtual environment"
         )
         raise ImportError(err_msg) from exc
 

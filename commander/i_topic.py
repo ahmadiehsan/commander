@@ -8,7 +8,7 @@ class ITopic:
     @classmethod
     def get_help(cls):
         if cls.help is None:
-            err_msg = f"{cls} should either include a 'help' attribute, or override the 'get_help()' method."
+            err_msg = f"{cls} should either include a 'help' attribute, or override the 'get_help()' method"
             raise NotImplementedError(err_msg)
 
         return cls.help

@@ -11,7 +11,7 @@ class IAction:
     @classmethod
     def get_help(cls):
         if cls.help is None:
-            err_msg = f"{cls} should either include a 'help' attribute, or override the 'get_help()' method."
+            err_msg = f"{cls} should either include a 'help' attribute, or override the 'get_help()' method"
             raise NotImplementedError(err_msg)
 
         return cls.help
@@ -23,7 +23,7 @@ class IAction:
     @property
     def arguments(self):
         if not self._arguments:
-            err_msg = "The 'arguments' attribute is only accessible during the run-time"
+            err_msg = "'arguments' attribute is only accessible during the run-time"
             raise RuntimeError(err_msg)
 
         return self._arguments

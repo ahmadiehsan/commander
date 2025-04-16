@@ -18,4 +18,4 @@ class Action(IAction):
         destination_path = Path.cwd() / self.arguments.project_name  # pylint: disable=no-member
         command = ["cp", "-r", f"{empty_project_path}/.", destination_path]
         subprocess.run(command, check=True)  # noqa: S603
-        logger.info("Done!")
+        logger.info("done")

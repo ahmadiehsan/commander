@@ -1,5 +1,0 @@
-[general]
-ignore=body-is-missing
-
-[title-match-regex]
-regex=^[A-Z].*

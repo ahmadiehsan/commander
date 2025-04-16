@@ -1,4 +1,0 @@
--r base.in
-
-pre-commit==2.17.0
-virtualenv==20.16.2  # To fix pre-commit dependency problem
