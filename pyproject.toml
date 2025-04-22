@@ -1,12 +1,16 @@
 # =========================
-# Project
+# Package
 # =====
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "commander"
-version = "5.0.1"
+version = "6.0.0"
 description = "A framework for creating commands"
 authors = [{ name = "Ehsan Ahmadi", email = "1374ea@gmail.com" }]
-requires-python = ">=3.8,<4.0.0"
+requires-python = ">=3.9,<4.0.0"
 readme = "README.md"
 dependencies = []
 
@@ -14,19 +18,25 @@ dependencies = []
 Repository = "https://github.com/ahmadiehsan/commander"
 
 [project.scripts]
-commander-admin = "commander.scripts:commander_admin"
+commander-admin = "commander.cli:commander_admin"
 
 [dependency-groups]
-dev = ["pre-commit==3.5.0", "ruff>=0.11.4,<0.12"]
+dev = ["fixmate", "pre-commit>=4.2.0,<5", "ruff>=0.11.4,<0.12"]
 
-[tool.setuptools.packages.find]
-include = ["commander*"]
+[tool.setuptools.package-data]
+"*" = ["*.*"]
+
+# =========================
+# UV
+# =====
+[tool.uv.sources]
+fixmate = { git = "https://github.com/ahmadiehsan/fixmate.git", rev = "1.0.1" }
 
 # =========================
 # Ruff
 # =====
 [tool.ruff]
-target-version = "py38"
+target-version = "py39"
 line-length = 120
 fix = true
 
@@ -56,11 +66,6 @@ ignore = [
     "ISC001", # single-line-implicit-string-concatenation (Suggested by ruff to disable)
 ]
 
-[tool.ruff.lint.per-file-ignores]
-"scripts/*" = [
-    "FA102", # future-required-type-annotation
-]
-
 [tool.ruff.lint.isort]
 split-on-trailing-comma = false
 combine-as-imports = true
@@ -72,7 +77,7 @@ skip-magic-trailing-comma = true
 # Pylint
 # =====
 [tool.pylint.main]
-py-version = "3.8"
+py-version = "3.9"
 
 [tool.pylint.format]
 max-line-length = 120
@@ -103,5 +108,5 @@ min-public-methods = 1
 # Python Checker
 # =====
 [tool.python_checker.per-file-ignores]
-"commander/scripts.py" = ["func_validator"]
+"commander/cli.py" = ["func_validator"]
 "commander/utils" = ["func_validator"]
