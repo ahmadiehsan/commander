@@ -21,7 +21,7 @@ Repository = "https://github.com/ahmadiehsan/commander"
 commander-admin = "commander.cli:commander_admin"
 
 [dependency-groups]
-dev = ["fixmate", "pre-commit>=4.3.0,<5", "ruff>=0.12.7,<0.13"]
+dev = ["fixmate", "pre-commit>=4.3.0,<5", "ruff>=0.15.12,<0.16"]
 
 [tool.setuptools.package-data]
 "*" = ["*.*"]
@@ -30,7 +30,7 @@ dev = ["fixmate", "pre-commit>=4.3.0,<5", "ruff>=0.12.7,<0.13"]
 # UV
 # =====
 [tool.uv.sources]
-fixmate = { git = "https://github.com/ahmadiehsan/fixmate.git", rev = "2.0.2" }
+fixmate = { git = "https://github.com/ahmadiehsan/fixmate.git", rev = "2.1.0" }
 
 # =========================
 # Ruff
