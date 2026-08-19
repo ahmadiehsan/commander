@@ -30,7 +30,7 @@ dev = ["fixmate", "pre-commit>=4.3.0,<5", "ruff>=0.15.12,<0.16"]
 # UV
 # =====
 [tool.uv.sources]
-fixmate = { git = "https://github.com/ahmadiehsan/fixmate.git", rev = "2.1.0" }
+fixmate = { git = "https://github.com/ahmadiehsan/fixmate.git", rev = "2.2.0" }
 
 # =========================
 # Ruff

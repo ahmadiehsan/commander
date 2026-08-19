@@ -47,7 +47,7 @@ repos:
       - id: ruff-format
 
   - repo: https://github.com/ahmadiehsan/fixmate
-    rev: 2.1.0
+    rev: 2.2.0
     hooks:
       - id: dir_checker
       - id: python_checker
